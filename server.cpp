@@ -85,6 +85,7 @@ void Server::newClient() {
     pollfd newfd = {cliId, POLLIN, 0};
     socket_poll.push_back(newfd);
     clients.push_back(cliId);
+    
 }
 
 void Server::newMessage(int soc) {
