@@ -13,6 +13,12 @@
 #include <iostream>
 #include <unistd.h>
 #include <cstdio>
+#include <openssl/sha.h>
+#include <openssl/bio.h>
+#include <openssl/evp.h>
+#include <openssl/buffer.h>
+
+#include "client.hpp"
 
 using std::string;
 using std::cout;
@@ -27,6 +33,8 @@ class Server {
 		int				port;
 		string			password;
 		vector<pollfd>	socket_poll;
+		vector<int> clients;
+		typedef vector<int>::iterator clients_iterator;
 		typedef vector<pollfd>::iterator poll_iterator;
 	public:
 		Server(const char *port, const char *password);
@@ -34,4 +42,5 @@ class Server {
 		int createSocket();
 		void startServer();
 		void newClient();
+		void newMessage(int);
 };

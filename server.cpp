@@ -51,6 +51,9 @@ void Server::startServer() {
         }
         for (poll_iterator it = this->socket_poll.begin(); it != this->socket_poll.end(); it++) {
             
+            if (it->revents == 0)
+                continue;
+
             if ((it->revents & POLLHUP) == POLLHUP) {
                 cout << "client disconneted" << endl;
                     close(it->fd);
@@ -61,12 +64,7 @@ void Server::startServer() {
                     newClient();
                     break;
                 }
-/*                 char buffer[100]; for messages
-	            bzero(buffer, 100);
-                recv(it->fd, buffer, 100, 0);
-                cout << buffer << endl;
-                sprintf(buffer, "Hoş geldin len %d\n", it->fd);
-                send(it->fd, buffer, strlen(buffer), 0); */
+                newMessage(it->fd);
             }
         }
     }
@@ -82,16 +80,25 @@ void Server::newClient() {
         std::cerr << "There was an error while accepting new client" << endl;
         exit(-1);
     }
-
+    //string response = "HTTP/1.1 101 Switching Protocols\nUpgrade: websocket\nConnection: Upgrade\nSec-WebSocket-Accept: RAFRY/6VKUrYnUQ7d9sjnQ==\nSec-WebSocket-Protocol: text.ircv3.net";
+    send(cliId, "200", 3, 0);
     pollfd newfd = {cliId, POLLIN, 0};
     socket_poll.push_back(newfd);
-    char hostname[1025];
-    if (getnameinfo((struct sockaddr*)&tmp, len, hostname, 1025, NULL, 0, NI_NUMERICSERV) != 0) {
-        std::cerr << "There was an error while getting the hostname" << endl;
-        exit(-1);
+    clients.push_back(cliId);
+}
+
+void Server::newMessage(int soc) {
+    string tmp;
+    cout << soc << endl;
+    char buffer[2];
+    while (true && (!strchr(buffer, '\n') && !strchr(buffer, 4))) {
+        bzero(buffer, 2);
+        int bytes = recv(soc, buffer, 2, 0);
+        if (bytes <= 0)
+            break;
+        tmp.append(buffer);
     }
-    cout << hostname << "  " << ntohs(tmp.sin_port) << endl;
-
-
-
+    for (clients_iterator it = clients.begin(); it != clients.end(); it++)
+        if (*it != soc)
+            send(*it, tmp.c_str(), tmp.length(), 0);
 }
