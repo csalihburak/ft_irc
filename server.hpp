@@ -13,10 +13,6 @@
 #include <iostream>
 #include <unistd.h>
 #include <cstdio>
-#include <openssl/sha.h>
-#include <openssl/bio.h>
-#include <openssl/evp.h>
-#include <openssl/buffer.h>
 
 #include "client.hpp"
 

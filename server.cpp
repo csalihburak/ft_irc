@@ -46,7 +46,7 @@ void Server::startServer() {
     this->socket_poll.push_back(server_fd);
     cout << "Server listening on port: " << port << endl;
     while (1) {
-        if (poll(this->socket_poll.begin().base(), this->socket_poll.size(), -1) < 0) { // waits until there is something on the poll
+        if (poll(this->socket_poll.data(), this->socket_poll.size(), -1) < 0) { // waits until there is something on the poll
             cout << "There was an error while polling";
         }
         for (poll_iterator it = this->socket_poll.begin(); it != this->socket_poll.end(); it++) {
@@ -81,7 +81,7 @@ void Server::newClient() {
         exit(-1);
     }
     //string response = "HTTP/1.1 101 Switching Protocols\nUpgrade: websocket\nConnection: Upgrade\nSec-WebSocket-Accept: RAFRY/6VKUrYnUQ7d9sjnQ==\nSec-WebSocket-Protocol: text.ircv3.net";
-    send(cliId, "200", 3, 0);
+    send(cliId, "200\n", 4, 0);
     pollfd newfd = {cliId, POLLIN, 0};
     socket_poll.push_back(newfd);
     clients.push_back(cliId);
@@ -90,9 +90,8 @@ void Server::newClient() {
 
 void Server::newMessage(int soc) {
     string tmp;
-    cout << soc << endl;
     char buffer[2];
-    while (true && (!strchr(buffer, '\n') && !strchr(buffer, 4))) {
+    while (true && !strchr(buffer, '\n')) {
         bzero(buffer, 2);
         int bytes = recv(soc, buffer, 2, 0);
         if (bytes <= 0)

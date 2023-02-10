@@ -3,8 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "C:\\msys64\\usr\\include\\**",
-                "C:\\MinGW\\include"
+                "/usr/lib",
+                "."
             ],
             "defines": [
                 "_DEBUG",
