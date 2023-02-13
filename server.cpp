@@ -112,8 +112,10 @@ void Server::newClient()
         std::cerr << "There was an error while accepting new client" << endl;
         exit(-1);
     }
-    string msg = _welcomemsg();
-    send(cliId, msg.c_str(), msg.length(), 0);
+    string s = ":scoskun 001 :Welcome to localhost!\n";
+    //string msg = _welcomemsg() + ;
+
+    send(cliId, s.c_str(), s.length(), 0);
 
     pollfd newfd = {cliId, POLLIN, 0};
     socket_poll.push_back(newfd);
@@ -126,6 +128,7 @@ vector<string> parse(string &msg) {
     std::stringstream ss(msg);
     std::string word;
     std::vector<std::string> words;
+    cout << msg << endl;
     while (ss.good() && ss >> word) {
         words.push_back(word);
     }
@@ -154,10 +157,13 @@ void Server::newMessage(int soc)
         cli->nickName = words[1];
     }
     if (words[0] == ("PRIVMSG") || words[0] == ("privmsg")) {
+        string modif = ":" + cli->nickName + "!~" + cli->nickName + "@localhost" + " PRIVMSG " + words[1] + " :" + words[2] + "\n";
+        cout << modif << endl;
         for (client_iterator it = clients.begin(); it != clients.end(); it++)
         {
+            cout << "test" << endl;
             if (it->second->nickName == words[1])
-                cout << "len: " << send(it->second->soc_fd, tmp.c_str(), tmp.length(), 0) << endl;
+                cout << "len: " << send(it->second->soc_fd, modif.c_str(), modif.length(), 0) << endl;
         }
     }
     else if (words[0] == ("JOIN") || words[0] == ("join")) {
