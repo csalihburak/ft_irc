@@ -148,6 +148,7 @@ void Server::newMessage(int soc)
     vector<string> words = parse(tmp);
     if (!words[24].empty() && words[24] == "NICK") {
         cli->nickName = words[25];
+        cli->userName = words[27];
         string s = ":" + words[25] +  " 001 :Welcome to localhost!\n";
         send(soc, s.c_str(), s.length(), 0);
     }
@@ -164,8 +165,25 @@ void Server::newMessage(int soc)
                 cout << "len: " << send(it->second->soc_fd, modif.c_str(), modif.length(), 0) << endl;
         }
     }
+    if (words[0] == ("MSG") || words[0] == ("msg")) {
+        string msg = ":" + cli->nickName + "!~" + cli->nickName + "@localhost" + " MSG " + words[1] + " :" + words[2] + "\n";
+        for (client_iterator it = clients.begin(); it != clients.end(); it++) {
+            if (it->second->nickName == words[1])
+                cout << "len: " << send(it->second->soc_fd, msg.c_str(), msg.length(), 0) << endl;
+        }
+
+    }
     else if (words[0] == ("JOIN") || words[0] == ("join")) {
-        channel_iterator it;
+        Channel newchannel(words[1], *cli);
+        channels.push_back(newchannel);
+        string modif =  ":" + cli->getPrefix() + " JOIN " + words[1] + "\r\n";
+        cout << "'" <<  modif << "'" << endl;
+        cli->write(modif);
+        cli->write(":ircserv 331 scoskun #test No topic is set\r\n");
+        cli->write(":ircserv 353 scoskun = #test @scoskun\r\n");
+        cli->write(":ircserv 366 scoskun #test End of /NAMES list\r\n"); 
+
+/*        channel_iterator it;
         for (it = channels.begin(); it != channels.end(); it++) {
             if (it->channelName == words[1]) {
                 if (it->password == words[2]) {
@@ -178,30 +196,20 @@ void Server::newMessage(int soc)
         }
         if (it == channels.end()) {
             //if (words[2].empty()) {
-                Channel newchannel(words[1], *cli);
-                channels.push_back(newchannel);
-                words[1].erase(words[1].begin());
-                string msg = "/MSG " + cli->nickName+ " Welcome to the "+ words[1] + "! Feel free to introduce yourself and ask any questions you may have.";
-                cout << msg << endl;
-                cout << "len: " << send(soc, msg.c_str(), msg.length(), 0) << endl;
-/*             }
+
+             }
             else {
                 cout << "test" << endl;
                 Channel newchannel(words[1], words[2], *cli);
                 channels.push_back(newchannel);
-            } */
-        }
+            }
+        }*/
     }
     if (words[0] == "LIST") {
         client_iterator it;
         channel_iterator x;
-/*         for (it = clients.begin(); it != clients.end(); it++) {
-            cout << "'" << it->second->nickName << "'" << endl;
-        } */
         for(x = channels.begin(); x != channels.end(); x++) {
-            cout << "'" << x->channelName << "'" << endl;
-            string msg = "";
-            send(soc, (x->channelName).c_str(), (x->channelName).length(), 0);
+            cli->write(x->channelName);            
         }
     }
     words.clear();

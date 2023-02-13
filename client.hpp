@@ -1,7 +1,12 @@
 #pragma once
 
+#include <sys/poll.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
 #include <algorithm>
-#include <string>
+#include <string.h>
 #include <vector>
 #include <map>
 #include <sstream>
@@ -9,6 +14,9 @@
 #include <iostream>
 #include <unistd.h>
 #include <cstdio>
+#include <functional> 
+#include <cctype>
+#include <locale>
 
 
 using std::string;
@@ -21,15 +29,16 @@ using std::map;
 class Client {
     public:
         string nickName;
-        string fullName;
+        string userName;
         string pass;
         int mod;
         int soc_fd;
         
         Client();
         Client(int);
-        
         ~Client();
+        void write(const string &);
+        string getPrefix() const;
         
 
 };
