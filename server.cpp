@@ -49,7 +49,7 @@ int Server::createSocket()
 
 void Server::startServer()
 {
-    pollfd server_fd = {serv_soc, POLLIN, 0}; // fd, requested events, returned events
+    pollfd server_fd = {serv_soc, POLLIN, 0}; 
     this->socket_poll.push_back(server_fd);
     cout << "Server listening on port: " << port << endl;
     while (1)
@@ -68,6 +68,7 @@ void Server::startServer()
             {
                 cout << "client disconneted" << endl;
                 close(it->fd);
+                exit(1);
             }
             if ((it->revents & POLLIN) == POLLIN)
             {
@@ -83,6 +84,19 @@ void Server::startServer()
     }
 }
 
+std::string	_welcomemsg(void)
+{
+	std::string welcome = RED;
+	welcome.append("██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗\n");
+	welcome.append("██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝\n");
+	welcome.append("██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗\n");
+	welcome.append("██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝\n");
+	welcome.append("╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗\n");
+	welcome.append(" ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝\n");
+	welcome.append(RESET);
+	return (welcome);
+};
+
 void Server::newClient()
 {
     int cliId;
@@ -92,14 +106,14 @@ void Server::newClient()
     socklen_t len = sizeof(tmp);
 
     cliId = accept(serv_soc, (sockaddr *)&tmp, &len);
+    cout << cliId << endl;
     if (cliId < 0)
     {
         std::cerr << "There was an error while accepting new client" << endl;
         exit(-1);
     }
-    char hostname[NI_MAXHOST];
-    getnameinfo((struct sockaddr *)&tmp, sizeof(tmp), hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV);
-    in_port_t port = tmp.sin_port;
+    string msg = _welcomemsg();
+    send(cliId, msg.c_str(), msg.length(), 0);
 
     pollfd newfd = {cliId, POLLIN, 0};
     socket_poll.push_back(newfd);
@@ -107,12 +121,14 @@ void Server::newClient()
     clients.insert(std::make_pair(cliId, newCli));
 }
 
+
 vector<string> parse(string &msg) {
-    std::istringstream ss(msg);
+    std::stringstream ss(msg);
     std::string word;
     std::vector<std::string> words;
-    while (std::getline(ss, word, ' '))
+    while (ss.good() && ss >> word) {
         words.push_back(word);
+    }
     return words;
 }
 
@@ -122,20 +138,19 @@ void Server::newMessage(int soc)
     char buffer[1000];
     Client *cli;
     cli = clients[soc];
-    while (true && !strchr(buffer, '\n'))
+    while (true)
     {
         bzero(buffer, 1000);
         int bytes = recv(soc, buffer, 1000, 0);
-        if (bytes <= 0)
-            break;
         tmp.append(buffer);
+        if (bytes <= 0 || strchr(buffer, '\n') || strchr(buffer, '\r')) {
+            break;
+        }
     }
     vector<string> words = parse(tmp);
-    if (words.size() == 0) {
+    if (words.empty())
         return;
-    }
     if (words[0] == "NICK" || words[0] == "nick") {
-        cout << "'" << words[1] << "'" << endl;
         cli->nickName = words[1];
     }
     if (words[0] == ("PRIVMSG") || words[0] == ("privmsg")) {
@@ -146,38 +161,38 @@ void Server::newMessage(int soc)
         }
     }
     else if (words[0] == ("JOIN") || words[0] == ("join")) {
-        if (words[1].find("#") != -1)
-            words[1] = (words[1].c_str() + 1);
-        else {
-            channel_iterator it;
-            for (it = channels.begin(); it != channels.end(); it++) {
-                if (it->channelName == words[1]) {
-                    if (it->password == words[2]) {
-                        it->users.push_back(*cli);
-                        break;
-                    }
-                    else
-                        send(soc, "Yor password is wrong!", 23, 0);
+        channel_iterator it;
+        for (it = channels.begin(); it != channels.end(); it++) {
+            if (it->channelName == words[1]) {
+                if (it->password == words[2]) {
+                    it->users.push_back(*cli);
+                    break;
                 }
-            }
-            if (it == channels.end()) {
-                if (words[2].empty()) {
-                    Channel newchannel(words[1], *cli);
-                    channels.push_back(newchannel);
-                }
-                else {
-                    Channel newchannel(words[1], words[2], *cli);
-                    channels.push_back(newchannel);
-                }
+                else
+                    send(soc, "Yor password is wrong!", 23, 0);
             }
         }
+        if (it == channels.end()) {
+            //if (words[2].empty()) {
+                Channel newchannel(words[1], *cli);
+                channels.push_back(newchannel);
+/*             }
+            else {
+                cout << "test" << endl;
+                Channel newchannel(words[1], words[2], *cli);
+                channels.push_back(newchannel);
+            } */
+        }
     }
-    if (words[0] == "LIST\n") {
+    if (words[0] == "LIST") {
         client_iterator it;
+        channel_iterator x;
         for (it = clients.begin(); it != clients.end(); it++) {
             cout << "'" << it->second->nickName << "'" << endl;
         }
+        for(x = channels.begin(); x != channels.end(); x++) {
+            cout << "'" << x->channelName << "'" << endl;
+        }
     }
     words.clear();
-
 }

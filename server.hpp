@@ -28,6 +28,13 @@ using std::vector;
 using std::map;
 
 
+# define RESET "\e[0m"
+# define RED "\e[1;91m"
+# define CYAN "\e[1;36m"
+# define YELLOW "\e[1;33m"
+# define PURPLE "\e[1;35m"
+
+
 class Channel;
 class Client;
 
