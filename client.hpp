@@ -20,8 +20,10 @@ using std::map;
 
 class Client {
     public:
-        std::string nickName;
-        std::string pass;
+        string nickName;
+        string fullName;
+        string pass;
+        int mod;
         int soc_fd;
         
         Client();
