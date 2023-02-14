@@ -6,5 +6,6 @@ int main(int ac, char **av) {
         exit(-1);
     }
     Server server(av[1], av[2]);
-    server.startServer();
+    server.startServer(server);
+
 }

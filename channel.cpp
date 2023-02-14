@@ -2,15 +2,22 @@
 
 Channel::Channel() {}
 
-Channel::Channel(std::string name, Client admin) {
+Channel::Channel(std::string name, Client *admin) {
     this->admin = admin;
     this->channelName = name;
+    users.push_back(admin);
 }
 
-Channel::Channel(std::string name, std::string password, Client admin) {
-    this->admin =  admin;
-    this->channelName = name;
-    this->password = password;
+
+Channel::Channel(Channel const &x) {
+    *this = x;
 }
+
+Channel &Channel::operator=(Channel const &x) {
+    if (this == &x)
+        return(*this);
+    return (*this);
+}
+
 
 Channel::~Channel() {}

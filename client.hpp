@@ -31,12 +31,16 @@ class Client {
         string nickName;
         string userName;
         string pass;
+        vector<string> channels;
         int mod;
         int soc_fd;
         
         Client();
         Client(int);
+        Client(Client const&);
         ~Client();
+
+        Client &operator=(Client const &x); 
         void write(const string &);
         string getPrefix() const;
         

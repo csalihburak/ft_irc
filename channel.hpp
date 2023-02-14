@@ -13,13 +13,14 @@ class Client;
 class Channel {
     public:
         std::string channelName;
-		Client admin;
-        vector<Client> users;
+		Client *admin;
+        vector<Client *> users;
         std::string password;
-	
+
+		Channel(Channel const&);
+		Channel &operator=(Channel const &x);
 		Channel();
-		Channel(std::string, Client);
-		Channel(std::string, std::string, Client);
+		Channel(std::string, Client*);
 		~Channel();
 
 };

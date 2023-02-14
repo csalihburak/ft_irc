@@ -20,6 +20,7 @@
 
 #include "channel.hpp"
 #include "client.hpp"
+#include "commands/Command.hpp"
 
 using std::string;
 using std::cout;
@@ -42,18 +43,23 @@ class Server {
 	private:
 		int				serv_soc;
 		int				port;
+		int				tmp_fd;
 		string			password;
 		vector<pollfd>	socket_poll;
-		vector<Channel> channels;
+		vector<Channel*> channels;
 		map<int, Client *> clients;
-		typedef vector<Channel>::iterator channel_iterator;
+	public:
+		typedef vector<Channel*>::iterator channel_iterator;
 		typedef vector<pollfd>::iterator poll_iterator;
 		typedef map<int, Client*>::iterator client_iterator;
-	public:
 		Server(const char *port, const char *password);
 		~Server();
+		Client *getClient() {return clients[tmp_fd];}
+		vector<Channel*> &getChannel() {return channels;}
+		Channel &getChannel(string &);
 		int createSocket();
-		void startServer();
+		void startServer(Server &);
 		void newClient();
-		void newMessage(int);
+		void newMessage(int, Server &);
+		void addChannel(string &, Client &cli);
 };

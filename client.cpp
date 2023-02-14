@@ -9,8 +9,18 @@ Client::Client(int fd) {
     this->soc_fd = fd;
 }
 
+Client::Client(Client const &x) {
+    *this = x;
+}
+
+Client &Client::operator=(Client const &x) {
+    if (this == &x)
+        return(*this);
+    return (*this);
+}
+
 std::string Client::getPrefix() const {
-	return nickName + (userName.empty() ? "" : "!" + userName) + ("@127.0.0.1");
+	return nickName + ("!" + userName) + ("@127.0.0.1");
 }
 
 Client::~Client() {}
