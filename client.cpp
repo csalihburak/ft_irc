@@ -7,6 +7,7 @@ Client::Client() {
 
 Client::Client(int fd) {
     this->soc_fd = fd;
+    this->is_avl = 0;
 }
 
 Client::Client(Client const &x) {
@@ -18,6 +19,8 @@ Client &Client::operator=(Client const &x) {
         return(*this);
     return (*this);
 }
+
+int Client::isAvailable() {return is_avl;}
 
 std::string Client::getPrefix() const {
 	return nickName + ("!" + userName) + ("@127.0.0.1");

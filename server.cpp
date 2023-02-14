@@ -85,17 +85,6 @@ void Server::addChannel(string &name, Client &cli) {
     channels.push_back(chnl);
 }
 
-string	welcomemsg(void) {
-	std::string welcome;
-	welcome.append("██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗\n");
-	welcome.append("██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝\n");
-	welcome.append("██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗\n");
-	welcome.append("██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝\n");
-	welcome.append("╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗\n");
-	welcome.append(" ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝\n");
-	return (welcome);
-};
-
 void Server::newClient()
 {
     int cliId;
@@ -110,8 +99,6 @@ void Server::newClient()
         std::cerr << "There was an error while accepting new client" << endl;
         exit(-1);
     }
-   /*  string msg = welcomemsg();
-    send(cliId, msg.c_str(), msg.length(), 1); */
     pollfd newfd = {cliId, POLLIN, 0};
     socket_poll.push_back(newfd);
     Client *newCli = new Client(cliId);
@@ -145,61 +132,16 @@ void Server::newMessage(int soc, Server &serv)
 {
     string tmp;
     char buffer[1000];
-    Client *cli;
-    cli = clients[soc];
     serv.tmp_fd = soc;
     while (true)
     {
         bzero(buffer, 1000);
         int bytes = recv(soc, buffer, 1000, 0);
         tmp.append(buffer);
-        if (bytes <= 0 || strchr(buffer, '\n') || strchr(buffer, '\r')) {
+        if (bytes <= 0 || strchr(buffer, '\n') || strchr(buffer, '\r'))
             break;
-        }
-    }
-    cout << "msg: " << tmp << endl;
-    if (tmp.size() < 3)
-        return;
-    vector<string> words = parse(tmp);
-    if (words[0] == ("PRIVMSG") || words[0] == ("privmsg")) {
-        string modif = ":" + cli->nickName + "!~" + cli->nickName + "@localhost" + " PRIVMSG " + words[1] + " :" + words[2] + "\n";
-        cout << modif << endl;
-        for (client_iterator it = clients.begin(); it != clients.end(); it++) {
-            if (it->second->nickName == words[1])
-                cout << "len: " << send(it->second->soc_fd, modif.c_str(), modif.length(), 0) << endl;
-        }
     }
     Command cmd(tmp);
     cmd.parse(serv);
     return;
-    if (!words[24].empty() && words[24] == "NICK") {
-        cli->nickName = words[25];
-        cli->userName = words[27];
-        string s = ":" + words[25] +  " 001 :Welcome to localhost!\n";
-        send(soc, s.c_str(), s.length(), 0);
-    }
-    if (words[0] == "USER") {
-        cli->userName = words[1];
-    }
-    if (words[0] == ("MSG") || words[0] == ("msg")) {
-        string msg = ":" + cli->nickName + "!~" + cli->nickName + "@localhost" + " MSG " + words[1] + " :" + words[2] + "\n";
-        for (client_iterator it = clients.begin(); it != clients.end(); it++) {
-            if (it->second->nickName == words[1])
-                cout << "len: " << send(it->second->soc_fd, msg.c_str(), msg.length(), 0) << endl;
-        }
-
-    }
-    else if (words[0] == ("JOIN") || words[0] == ("join")) { 
-        Command cmd(tmp);
-        cmd.parse(serv);
-    }
-    if (words[0] == "LIST") {
-        client_iterator it;
-        channel_iterator x;
-        for(x = channels.begin(); x != channels.end(); x++) {
-            string modif =  ":" + cli->getPrefix() + " LIST " + (*x)->channelName + "\r\n";
-            cli->write(modif);            
-        }
-    }
-    words.clear();
 }

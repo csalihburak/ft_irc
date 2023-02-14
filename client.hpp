@@ -34,6 +34,7 @@ class Client {
         vector<string> channels;
         int mod;
         int soc_fd;
+		int is_avl;
         
         Client();
         Client(int);
@@ -43,6 +44,8 @@ class Client {
         Client &operator=(Client const &x); 
         void write(const string &);
         string getPrefix() const;
+		int isAvailable();
+
         
 
 };

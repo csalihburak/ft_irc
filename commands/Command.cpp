@@ -11,6 +11,8 @@ Command::Command(const char *) {
 
 }
 
+
+
 Command::Command() {
     this->command = nullptr;
 }
@@ -33,10 +35,11 @@ string Command::welcomemsg() {
 	return (welcome);
 };
 
+//string modif = ":" + cli->nickName + "!~" + cli->nickName + "@localhost" + " PRIVMSG " + words[1] + " :" + words[2] + "\n";
+//
 
 string Command::parse(Server &serv) {
 
-    cout << command << endl;
     Client *cli = serv.getClient();
     std::stringstream ss(command);
     string word;
@@ -44,7 +47,13 @@ string Command::parse(Server &serv) {
     
     while (ss.good() && ss >> word)
         words.push_back(word);
-    
+    if (cli->is_avl) {
+        if (cli->nickName.empty()) {
+            cout << "please provide a nickname";
+        }
+        else if(cli->userName.empty())
+            cout << "please provide a username";
+    }
     if (!words[24].empty() && words[24] == "NICK") { //special for colloquy
         cli->nickName = words[25];
         cli->userName = words[27];
