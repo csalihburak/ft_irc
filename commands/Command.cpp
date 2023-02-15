@@ -38,6 +38,33 @@ string Command::welcomemsg() {
 //string modif = ":" + cli->nickName + "!~" + cli->nickName + "@localhost" + " PRIVMSG " + words[1] + " :" + words[2] + "\n";
 //
 
+void Command::part(vector<string>& words, Server &serv, Client &cli) {
+    vector<Channel*> allChannels;
+    vector<Client*>::iterator it;
+    vector<string> usrChnls;
+    string message;
+    string cmd;
+    Server::channel_iterator ct;
+
+    usrChnls = cli.getChannels();
+    allChannels = serv.getChannel();
+    cmd = "PART";
+    for(ct = allChannels.begin(); ct != allChannels.end(); ct++) {
+        if (std::find(usrChnls.begin(), usrChnls.end(), (*ct)->channelName) != usrChnls.end()) {
+            (*ct)->users.erase(std::find((*ct)->users.begin(), (*ct)->users.end(), &cli));
+            for (it = (*ct)->users.begin(); it != (*ct)->users.end(); it++) {
+                message = ":" + cli.nickName + "!~" + cli.nickName + "@localhost " + cmd + " " + (*ct)->channelName + "\r\n";
+                (*it)->write(message);
+            }
+            break;
+        }
+    }
+    if (ct == allChannels.end()) {
+        message = ":ircserv 404 " + cli.nickName + " " + words[1] + " :Not in the channel\r\n";
+        cli.write(message);
+    }
+}
+
 string Command::parse(Server &serv) {
 
     Client *cli = serv.getClient();
@@ -68,12 +95,15 @@ string Command::parse(Server &serv) {
         cli->userName = words[1];
     } else if (words[0] == "QUIT" || words[0] == "quit") {
         serv.quit(cli->soc_fd);
-    } else if (words[0] == ("PRIVMSG") || words[0] == ("privmsg")){
+    } else if (words[0] == "PART" || words[0] == "part") {
+        part(words, serv, *cli);
+    }else if (words[0] == ("PRIVMSG") || words[0] == ("privmsg")){
         privmsg(words, serv, *cli);
     } else if (words[0] == ("JOIN") || words[0] == ("join")) {
         join(words, serv);
     } else if (words[0] == ("PING") || words[0] == ("ping")) {
-        //ping(words);
+        word = ":ircserv PONG localhost: " + words[1];
+        cli->write(word);
     } else if (words[0] == ("LIST") || words[0] == ("list")) {
         //list(words);
     } else if (words[0] == ("QUIT") || words[0] == ("quit")) {

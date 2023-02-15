@@ -25,7 +25,7 @@ class Command {
 		// commands
 		string privmsg(vector<string>&, Server &, Client &);
 		string join(vector<string>&, Server &);
-		void part(vector<string>&, Server &);
+		void part(vector<string>&, Server &, Client &);
 		//string ping(vector<string>&);
 		string welcomemsg(void);
 		//void list(vector<string>&);

@@ -64,5 +64,5 @@ class Server {
 		void newMessage(int, Server &);
 		void addChannel(string &, Client &cli);
 		void quit(int);
-		void notifyAll(Channel const *, Client &);
+		void notifyAll(Channel const *, Client &, string &);
 };

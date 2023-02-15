@@ -48,7 +48,7 @@ int Server::createSocket()
 }
 
 
-void Server::notifyAll(Channel const *chnl, Client &cli) {
+void Server::notifyAll(Channel const *chnl, Client &cli, string &cmd) {
     vector<Client*> all_users;
     vector<Client*>::iterator it;
     string message;
@@ -56,7 +56,7 @@ void Server::notifyAll(Channel const *chnl, Client &cli) {
     all_users = chnl->users;
     for (it = all_users.begin(); it != all_users.end(); it++) {
         if ((*it)->nickName != cli.nickName) {
-            message = ":" + cli.nickName + "!~" + cli.nickName + "@localhost" + " QUIT " + chnl->channelName + "\r\n";
+            message = ":" + cli.nickName + "!~" + cli.nickName + "@localhost" + " " + cmd + " " + chnl->channelName + "\r\n";
             (*it)->write(message);
         }
     }
@@ -67,7 +67,7 @@ void Server::quit(int soc) {
     Client *cli;
     vector<string> usrChnls;
     vector<Channel*> allChannels;
-    string buff;
+    string cmd;
     poll_iterator it;
     channel_iterator ct;
 
@@ -81,9 +81,10 @@ void Server::quit(int soc) {
         }
         if (it != socket_poll.end()) {
             socket_poll.erase(it);
+            cmd = "PART";
             for(ct = allChannels.begin(); ct != allChannels.end(); ct++) {
                 if (std::find(usrChnls.begin(), usrChnls.end(), (*ct)->channelName) != usrChnls.end()) {
-                    notifyAll((*ct), *(clients[soc]));
+                    notifyAll((*ct), *(clients[soc]), cmd);
                 }
             }
         }
