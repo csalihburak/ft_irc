@@ -88,9 +88,7 @@ void Server::addChannel(string &name, Client &cli) {
 void Server::newClient()
 {
     int cliId;
-    sockaddr_in tmp = {
-        0,
-    };
+    sockaddr_in tmp;
     socklen_t len = sizeof(tmp);
 
     cliId = accept(serv_soc, (sockaddr *)&tmp, &len);
@@ -107,7 +105,7 @@ void Server::newClient()
 
 
 Channel &Server::getChannel(string &name) {
-    int i;
+    unsigned long i;
 
     for (i = 0; i < channels.size(); i++) {
         if (channels[i]->channelName == name)

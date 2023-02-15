@@ -55,6 +55,7 @@ class Server {
 		Server(const char *port, const char *password);
 		~Server();
 		Client *getClient() {return clients[tmp_fd];}
+		map<int, Client *>& getClients() { return clients; }
 		vector<Channel*> &getChannel() {return channels;}
 		Channel &getChannel(string &);
 		int createSocket();

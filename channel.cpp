@@ -1,6 +1,10 @@
 #include "channel.hpp"
 
-Channel::Channel() {}
+Channel::Channel() {
+	this->admin = nullptr;
+	this->channelName = "";
+	this->password = "";
+}
 
 Channel::Channel(std::string name, Client *admin) {
     this->admin = admin;

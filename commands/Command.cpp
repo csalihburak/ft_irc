@@ -66,7 +66,7 @@ string Command::parse(Server &serv) {
     } else if (words[0] == "USER" || words[0] == "user") {
         cli->userName = words[1];
     }else if (words[0] == ("PRIVMSG") || words[0] == ("privmsg")){
-        //privmsg(words);
+        privmsg(words, serv, *cli);
     } else if (words[0] == ("JOIN") || words[0] == ("join")) {
         join(words, serv);
     } else if (words[0] == ("PING") || words[0] == ("ping")) {

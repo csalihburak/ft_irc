@@ -23,7 +23,7 @@ class Command {
         string parse(Server &);
 
 		// commands
-		//string privmsg(vector<string>&);
+		string privmsg(vector<string>&, Server &, Client &);
 		string join(vector<string>&, Server &);
 		//string ping(vector<string>&);
 		string welcomemsg(void);
