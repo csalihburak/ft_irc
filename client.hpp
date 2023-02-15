@@ -45,6 +45,7 @@ class Client {
         void write(const string &);
         string getPrefix() const;
 		int isAvailable();
+        vector<string> &getChannels();
 
         
 

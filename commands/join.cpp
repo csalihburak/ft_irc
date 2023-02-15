@@ -17,7 +17,6 @@ string Command::join(vector<string>& words, Server &serv) {
     }
     for (it = allChannels.begin(); it != allChannels.end(); it++) {
         if ((*it)->channelName == words[1]) {
-            (*it)->users.push_back(cli);
             cli->channels.push_back(words[1]);
             (*it)->users.push_back(cli);
             channel = *it;
@@ -45,6 +44,7 @@ string Command::join(vector<string>& words, Server &serv) {
             message.append(" ");
     }
     message.append(":ircserv 366 " + cli->nickName + " " + channel->channelName + " End of /NAMES list\r\n");
+    cout << message << endl;
     cli->write(message);
     return (words[1]);
 }

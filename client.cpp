@@ -33,3 +33,7 @@ void Client::write(const string &msg) {
     if (send(soc_fd, msg.c_str(), msg.length(), 0) < 0)
         std::cerr << "Error while sending self message!" << endl;
 }
+
+vector<string> &Client::getChannels() {
+    return channels;
+}

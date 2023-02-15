@@ -47,6 +47,51 @@ int Server::createSocket()
     return soc;
 }
 
+
+void Server::notifyAll(Channel const *chnl, Client &cli) {
+    vector<Client*> all_users;
+    vector<Client*>::iterator it;
+    string message;
+
+    all_users = chnl->users;
+    for (it = all_users.begin(); it != all_users.end(); it++) {
+        if ((*it)->nickName != cli.nickName) {
+            message = ":" + cli.nickName + "!~" + cli.nickName + "@localhost" + " QUIT " + chnl->channelName + "\r\n";
+            (*it)->write(message);
+        }
+    }
+
+}
+
+void Server::quit(int soc) {
+    Client *cli;
+    vector<string> usrChnls;
+    vector<Channel*> allChannels;
+    string buff;
+    poll_iterator it;
+    channel_iterator ct;
+
+    cli = clients[soc];
+    if (cli != NULL) {
+        usrChnls = cli->getChannels();
+        allChannels = getChannel();
+        for(it = socket_poll.begin(); it != socket_poll.end(); it++) {
+            if (it->fd == soc)
+                break;
+        }
+        if (it != socket_poll.end()) {
+            socket_poll.erase(it);
+            for(ct = allChannels.begin(); ct != allChannels.end(); ct++) {
+                if (std::find(usrChnls.begin(), usrChnls.end(), (*ct)->channelName) != usrChnls.end()) {
+                    notifyAll((*ct), *(clients[soc]));
+                }
+            }
+        }
+    }
+}
+
+
+
 void Server::startServer(Server &serv)
 {
     pollfd server_fd = {serv_soc, POLLIN, 0}; 
@@ -64,8 +109,8 @@ void Server::startServer(Server &serv)
 
             if ((it->revents & POLLHUP) == POLLHUP) {
                 cout << "client disconneted" << endl;
-                close(it->fd);
-                exit(1);
+                serv.quit(it->fd);
+                break;
             }
             if ((it->revents & POLLIN) == POLLIN) {
                 if (it->fd == this->serv_soc)
@@ -139,6 +184,7 @@ void Server::newMessage(int soc, Server &serv)
         if (bytes <= 0 || strchr(buffer, '\n') || strchr(buffer, '\r'))
             break;
     }
+	cout << tmp << endl;
     Command cmd(tmp);
     cmd.parse(serv);
     return;

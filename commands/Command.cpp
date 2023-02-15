@@ -44,7 +44,8 @@ string Command::parse(Server &serv) {
     std::stringstream ss(command);
     string word;
     vector<string> words;
-    
+
+
     while (ss.good() && ss >> word)
         words.push_back(word);
     if (cli->is_avl) {
@@ -59,13 +60,15 @@ string Command::parse(Server &serv) {
         cli->userName = words[27];
         string s = ":" + words[25] +  " 001 :Welcome to localhost!\n";
         cli->write(s);
-        cli->write(welcomemsg());
+        //cli->write(welcomemsg());
     }
     if (words[0] == ("NICK") || words[0] == ("nick")) {
         cli->nickName = words[1];
     } else if (words[0] == "USER" || words[0] == "user") {
         cli->userName = words[1];
-    }else if (words[0] == ("PRIVMSG") || words[0] == ("privmsg")){
+    } else if (words[0] == "QUIT" || words[0] == "quit") {
+        serv.quit(cli->soc_fd);
+    } else if (words[0] == ("PRIVMSG") || words[0] == ("privmsg")){
         privmsg(words, serv, *cli);
     } else if (words[0] == ("JOIN") || words[0] == ("join")) {
         join(words, serv);
