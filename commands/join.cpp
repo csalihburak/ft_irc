@@ -18,7 +18,8 @@ string Command::join(vector<string>& words, Server &serv) {
     for (it = allChannels.begin(); it != allChannels.end(); it++) {
         if ((*it)->channelName == words[1]) {
             cli->channels.push_back(words[1]);
-            (*it)->users.push_back(cli);
+            if (std::find((*it)->users.begin(), (*it)->users.end(), cli) == (*it)->users.end())
+                (*it)->users.push_back(cli);
             channel = *it;
         }
     }
