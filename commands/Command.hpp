@@ -28,5 +28,9 @@ class Command {
 		void part(vector<string>&, Server &, Client &);
 		//string ping(vector<string>&);
 		string welcomemsg(void);
-		//void list(vector<string>&);
+		string mergeMessage(vector<string>& words);
+		void list(vector<string> &, Server &);
+		void colloquy(vector<string> &, Client *);
+		void commands(vector<string>&, Server &, Client *);
+		int checks(Server &, vector<string> &, Client *);
 };

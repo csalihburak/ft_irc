@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "/usr/lib"
+                "/usr/lib",
+                "."
             ],
             "defines": [
                 "_DEBUG",

@@ -70,6 +70,7 @@ void Server::quit(int soc) {
     string cmd;
     poll_iterator it;
     channel_iterator ct;
+    client_iterator cit;
 
     cli = clients[soc];
     if (cli != NULL) {
@@ -85,8 +86,10 @@ void Server::quit(int soc) {
             for(ct = allChannels.begin(); ct != allChannels.end(); ct++) {
                 if (std::find(usrChnls.begin(), usrChnls.end(), (*ct)->channelName) != usrChnls.end()) {
                     notifyAll((*ct), *(clients[soc]), cmd);
+                    (*ct)->users.erase(std::find((*ct)->users.begin(), (*ct)->users.end(), cli));                    
                 }
             }
+            close(cli->soc_fd);
         }
     }
 }
@@ -111,6 +114,7 @@ void Server::startServer(Server &serv)
             if ((it->revents & POLLHUP) == POLLHUP) {
                 cout << "client disconneted" << endl;
                 serv.quit(it->fd);
+                clients.erase(it->fd);
                 break;
             }
             if ((it->revents & POLLIN) == POLLIN) {
@@ -120,7 +124,7 @@ void Server::startServer(Server &serv)
                     newClient();
                     break;
                 }
-                newMessage(it->fd, serv);
+                newMessage(it->fd);
             }
         }
     }
@@ -131,12 +135,12 @@ void Server::addChannel(string &name, Client &cli) {
     channels.push_back(chnl);
 }
 
-void Server::newClient()
-{
+void Server::newClient() {
     int cliId;
     sockaddr_in tmp;
-    socklen_t len = sizeof(tmp);
-
+    socklen_t len;
+    
+    len = sizeof(tmp);
     cliId = accept(serv_soc, (sockaddr *)&tmp, &len);
     cout << cliId << endl;
     if (cliId < 0) {
@@ -146,7 +150,11 @@ void Server::newClient()
     pollfd newfd = {cliId, POLLIN, 0};
     socket_poll.push_back(newfd);
     Client *newCli = new Client(cliId);
+    newCli->flag = 1;
+    string s = ":ircserv 001 :Welcome to ft_irc server!\r\nPlease enter the password: \r\n";
+    newCli->write(s);
     clients.insert(std::make_pair(cliId, newCli));
+    cout << "ilkin ilki: " << getClients().size() << endl;
 }
 
 
@@ -160,33 +168,20 @@ Channel &Server::getChannel(string &name) {
     return(*channels[i]);
 }
 
-
-
-vector<string> parse(string &msg) {
-    std::stringstream ss(msg);
-    std::string word;
-    std::vector<std::string> words;
-    while (ss.good() && ss >> word) {
-        words.push_back(word);
-    } 
-    return words;
-}
-
-void Server::newMessage(int soc, Server &serv)
-{
+void Server::newMessage(int soc) {
     string tmp;
     char buffer[1000];
-    serv.tmp_fd = soc;
-    while (true)
-    {
+    this->tmp_fd = soc;
+    while (true) {
         bzero(buffer, 1000);
         int bytes = recv(soc, buffer, 1000, 0);
         tmp.append(buffer);
         if (bytes <= 0 || strchr(buffer, '\n') || strchr(buffer, '\r'))
             break;
     }
-	cout << tmp << endl;
+	if (tmp.length() < 3)
+        return;
     Command cmd(tmp);
-    cmd.parse(serv);
+    cmd.parse(*this);
     return;
 }

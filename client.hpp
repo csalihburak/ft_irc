@@ -35,6 +35,7 @@ class Client {
         int mod;
         int soc_fd;
 		int is_avl;
+        int flag;
         
         Client();
         Client(int);

@@ -61,8 +61,9 @@ class Server {
 		int createSocket();
 		void startServer(Server &);
 		void newClient();
-		void newMessage(int, Server &);
+		void newMessage(int);
 		void addChannel(string &, Client &cli);
 		void quit(int);
 		void notifyAll(Channel const *, Client &, string &);
+		string getPassword() { return password;}
 };
