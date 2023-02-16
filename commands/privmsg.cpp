@@ -1,18 +1,15 @@
 #include "Command.hpp"
 
-string Command::mergeMessage(vector<string>& words)
-{
-	int i;
-	std::string result;
-
-	i = 0;
-    for (std::vector<std::string>::const_iterator it = words.begin(); it != words.end(); ++it) {
-        if (it != words.end() && i > 1) {
-            result += words[i];
-			if (it != words.end() - 1)
-				result += " ";
-        }
-		i++;
+string Command::mergeMessage(vector<string>& words) {
+    unsigned long i;
+    std::string result;
+    i = 0;
+    if (words[0] == "PRIVMSG")
+        i = 2;
+    for (;i < words.size(); i++) {
+        result.append(words[i]);
+        if (i + 1 != words.size())
+            result.append(" ");
     }
     return result;
 }

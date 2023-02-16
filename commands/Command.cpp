@@ -59,16 +59,27 @@ void Command::commands(vector<string> &words, Server &serv, Client *cli) {
     } else if (words[0] == ("LIST") || words[0] == ("list")) {
         list(words, serv);
     } else if (words[0] == ("WHO") || words[0] == ("who")) {
-        who(words, serv);
-    }  else if (words[0] == ("QUIT") || words[0] == ("quit")) {
+        //who(words, serv);
+    } else if (words[0] == ("PART") || words[0] == ("PART")) {
+        part(words, serv, *cli);
+    }   else if (words[0] == ("QUIT") || words[0] == ("quit")) {
         quit(cli->soc_fd, serv);
         serv.getClients().erase(cli->soc_fd);
+    } else if (words[0] == ("ME")) {
+        string nick = "Nickname: " + cli->nickName;
+        string username = "Username: " + cli->userName;
+        vector<string> channels = cli->channels;
+        string cha = "channels: ";
+        for (unsigned long i = 0; i < channels.size(); i++) {
+            cha.append(channels[i] + " ");
+        }
+        string message = ":bot!~bot@localhost PRIVMSG "+  cli->nickName + " :" +  nick + " || "  + username +  " || " + cha + "\r\n";
+        cli->write(message);
     }
 }
 
 string Command::parse(Server &serv) {
 
-    cout << "ilk: " << serv.getClients().size() << endl;
     Client *cli = serv.getClient();
     std::stringstream ss(command);
     string word;

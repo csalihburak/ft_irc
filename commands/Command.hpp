@@ -27,7 +27,7 @@ class Command {
 		void part(vector<string>&, Server &, Client &);
 		void list(vector<string> &, Server &);
 		static void quit(int, Server &);
-		void who(vector<string>&, Server &);
+		//void who(vector<string>&, Server &);
 		void commands(vector<string>&, Server &, Client *);
 		int checks(Server &, vector<string> &, Client *);
 		void colloquy(vector<string> &, Client *);
