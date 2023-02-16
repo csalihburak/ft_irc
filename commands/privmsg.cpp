@@ -39,7 +39,7 @@ string Command::privmsg(vector<string>& words, Server &serv, Client &cli) {
 				for(unsigned long  i = 0; i < cli.channels.size(); i++) {
 					if (words[1] == cli.channels[i]) {
 						for(unsigned long  i = 0; i < (*ct)->users.size() - 1; i++) {
-							message = ":" + cli.nickName + "!~" + cli.nickName + "@localhost" + " PRIVMSG " + words[1] + " :" + test + "\r\n";
+							message = ":" + cli.nickName + "!~" + cli.userName + "@localhost" + " PRIVMSG " + words[1] + " :" + test + "\r\n";
 							if (cli.nickName != (*ct)->users[i]->nickName)
 								(*ct)->users[i]->write(message);
 						}

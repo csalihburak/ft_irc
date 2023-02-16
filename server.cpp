@@ -63,39 +63,6 @@ void Server::notifyAll(Channel const *chnl, Client &cli, string &cmd) {
 
 }
 
-void Server::quit(int soc) {
-    Client *cli;
-    vector<string> usrChnls;
-    vector<Channel*> allChannels;
-    string cmd;
-    poll_iterator it;
-    channel_iterator ct;
-    client_iterator cit;
-
-    cli = clients[soc];
-    if (cli != NULL) {
-        usrChnls = cli->getChannels();
-        allChannels = getChannel();
-        for(it = socket_poll.begin(); it != socket_poll.end(); it++) {
-            if (it->fd == soc)
-                break;
-        }
-        if (it != socket_poll.end()) {
-            socket_poll.erase(it);
-            cmd = "PART";
-            for(ct = allChannels.begin(); ct != allChannels.end(); ct++) {
-                if (std::find(usrChnls.begin(), usrChnls.end(), (*ct)->channelName) != usrChnls.end()) {
-                    notifyAll((*ct), *(clients[soc]), cmd);
-                    (*ct)->users.erase(std::find((*ct)->users.begin(), (*ct)->users.end(), cli));                    
-                }
-            }
-            close(cli->soc_fd);
-        }
-    }
-}
-
-
-
 void Server::startServer(Server &serv)
 {
     pollfd server_fd = {serv_soc, POLLIN, 0}; 
@@ -113,8 +80,9 @@ void Server::startServer(Server &serv)
 
             if ((it->revents & POLLHUP) == POLLHUP) {
                 cout << "client disconneted" << endl;
-                serv.quit(it->fd);
+                Command::quit(it->fd, serv);
                 clients.erase(it->fd);
+                cout << "son: " << clients.size() << endl;
                 break;
             }
             if ((it->revents & POLLIN) == POLLIN) {
