@@ -26,7 +26,6 @@ void Command::part(vector<string>& words, Server &serv, Client &cli) {
         } else {
             for (it = (*ct)->users.begin(); it != (*ct)->users.end(); it++) {
                 message =  ":" + cli.nickName + "!~" + cli.userName + "@localhost PART " + (*ct)->channelName + " :(Disconnected)\r\n";
-                cout << message << endl;
                 (*it)->write(message);
             }
             (*ct)->users.erase(std::find((*ct)->users.begin(), (*ct)->users.end(), &cli));

@@ -26,21 +26,16 @@ int Command::checks(Server &serv, vector<string> &words, Client *cli)
             cli->write(":ircserv 404 wrong password! Try again!!\r\n");
         }
     } else if (cli->nickName.empty()) {
-            cout << "size: " << allClients.size() << endl;
         if (allClients.size() > 0) { 
             for (it = allClients.begin(); it != allClients.end(); it++) {
-                cout << "test1" << endl;
                 if ((it)->second->nickName == words[0]) {
-                    cout << "test5" << endl;
                     cli->write(":ircserv 404 This nickname already exists!\r\n");
                     cli->write(":ircserv 401 Please provide a unique nickname: ");
                     return (0);
                 }
             }
         }
-        cout << "test3" << endl;
         cli->nickName = words[0];
-        cout << "test4" << endl;
         cli->write(":ircserv 401 Please provide a username: ");
     } else if (cli->userName.empty()) {
         if (cli->nickName != words[0])

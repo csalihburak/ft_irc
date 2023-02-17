@@ -82,7 +82,6 @@ void Server::startServer(Server &serv)
                 cout << "client disconneted" << endl;
                 Command::quit(it->fd, serv);
                 clients.erase(it->fd);
-                cout << "son: " << clients.size() << endl;
                 break;
             }
             if ((it->revents & POLLIN) == POLLIN) {
@@ -110,7 +109,6 @@ void Server::newClient() {
     
     len = sizeof(tmp);
     cliId = accept(serv_soc, (sockaddr *)&tmp, &len);
-    cout << cliId << endl;
     if (cliId < 0) {
         std::cerr << "There was an error while accepting new client" << endl;
         exit(-1);

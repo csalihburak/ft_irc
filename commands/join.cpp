@@ -45,7 +45,6 @@ string Command::join(vector<string>& words, Server &serv) {
             message.append(" ");
     }
     message.append(":ircserv 366 " + cli->nickName + " " + channel->channelName + " End of /NAMES list\r\n");
-    cout << message << endl;
     cli->write(message);
     return (words[1]);
 }
