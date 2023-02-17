@@ -1,6 +1,6 @@
 NAME = ircserv
 
-SRC =  main.cpp channel.cpp client.cpp server.cpp commands/Command.cpp commands/join.cpp commands/privmsg.cpp commands/list.cpp commands/checks.cpp commands/kick.cpp \
+SRC =  main.cpp channel.cpp client.cpp server.cpp commands/Command.cpp commands/join.cpp commands/privmsg.cpp commands/list.cpp commands/checks.cpp commands/kick.cpp commands/me.cpp \
 	commands/quit.cpp commands/part.cpp
 OBJ_DIR = obj/
 

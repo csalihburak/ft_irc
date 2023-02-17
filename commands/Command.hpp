@@ -27,6 +27,7 @@ class Command {
 		void part(vector<string>&, Server &, Client &);
 		void list(vector<string> &, Server &);
 		static void quit(int, Server &);
+		void me(Client *);
 		//void who(vector<string>&, Server &);
 		void kick(vector<string> &, Server &, Client &);
 		void kickMessage(Channel const *, Client &, string);
