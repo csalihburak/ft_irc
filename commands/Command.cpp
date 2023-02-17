@@ -35,36 +35,6 @@ string Command::welcomemsg() {
 	return (welcome);
 };
 
-//string modif = ":" + cli->nickName + "!~" + cli->nickName + "@localhost" + " PRIVMSG " + words[1] + " :" + words[2] + "\n";
-//
-
-void Command::part(vector<string>& words, Server &serv, Client &cli) {
-    vector<Channel*> allChannels;
-    vector<Client*>::iterator it;
-    vector<string> usrChnls;
-    string message;
-    string cmd;
-    Server::channel_iterator ct;
-
-    usrChnls = cli.getChannels();
-    allChannels = serv.getChannel();
-    cmd = "PART";
-    for(ct = allChannels.begin(); ct != allChannels.end(); ct++) {
-        if (std::find(usrChnls.begin(), usrChnls.end(), (*ct)->channelName) != usrChnls.end()) {
-            for (it = (*ct)->users.begin(); it != (*ct)->users.end(); it++) {
-                message =  ":" + cli.nickName + "!~" + cli.userName + "@localhost PART " + (*ct)->channelName + " :(Disconnected)\r\n";
-                cout << message << endl;
-                (*it)->write(message);
-            }
-            (*ct)->users.erase(std::find((*ct)->users.begin(), (*ct)->users.end(), &cli));
-            break;
-        }
-    }
-    if (ct == allChannels.end()) {
-        message = ":ircserv 404 " + cli.nickName + " " + words[1] + " :Not in the channel\r\n";
-        cli.write(message);
-    }
-}
 
 void Command::colloquy(vector<string> &words, Client *cli) {   
     cli->nickName = words[25];
@@ -88,18 +58,30 @@ void Command::commands(vector<string> &words, Server &serv, Client *cli) {
         cli->write(rep);
     } else if (words[0] == ("LIST") || words[0] == ("list")) {
         list(words, serv);
-    } else if (words[0] == ("QUIT") || words[0] == ("quit")) {
-        cout << "before: " << serv.getClients().size() << endl;
-        serv.quit(cli->soc_fd);
-        cout << "after: " << serv.getClients().size() << endl;
+    } else if (words[0] == ("WHO") || words[0] == ("who")) {
+        //who(words, serv);
+    } else if (words[0] == ("PART") || words[0] == ("PART")) {
+        part(words, serv, *cli);
+    }   else if (words[0] == ("QUIT") || words[0] == ("quit")) {
+        quit(cli->soc_fd, serv);
+        serv.getClients().erase(cli->soc_fd);
     } else if (words[0] == ("KICK") || words[0] == ("kick")) {
         kick(words, serv, *cli);
+    }else if (words[0] == ("ME")) {
+        string nick = "Nickname: " + cli->nickName;
+        string username = "Username: " + cli->userName;
+        vector<string> channels = cli->channels;
+        string cha = "channels: ";
+        for (unsigned long i = 0; i < channels.size(); i++) {
+            cha.append(channels[i] + " ");
+        }
+        string message = ":bot!~bot@localhost PRIVMSG "+  cli->nickName + " :" +  nick + " || "  + username +  " || " + cha + "\r\n";
+        cli->write(message);
     }
 }
 
 string Command::parse(Server &serv) {
 
-    cout << "ilk: " << serv.getClients().size() << endl;
     Client *cli = serv.getClient();
     std::stringstream ss(command);
     string word;

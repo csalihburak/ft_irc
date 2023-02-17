@@ -9,7 +9,7 @@ void    Command::kickMessage(Channel const *chnl, Client &cli, string name) {
 
     all_users = chnl->users;
     for(it = all_users.begin(); it != all_users.end(); it++) {
-        message = ":" + name + " KICK " + chnl->channelName + " " + name + " :" + "KICKED\r\n";
+        message = ":" + cli.nickName + " KICK " + chnl->channelName + " " + name + " :" + "KICKED\r\n";
         (*it)->write(message);
     }
 }
