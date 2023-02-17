@@ -57,13 +57,13 @@ class Server {
 		Client *getClient() {return clients[tmp_fd];}
 		map<int, Client *>& getClients() { return clients; }
 		vector<Channel*> &getChannel() {return channels;}
-		vector<pollfd> &getPoll() { return socket_poll;}
 		Channel &getChannel(string &);
 		int createSocket();
 		void startServer(Server &);
 		void newClient();
 		void newMessage(int);
 		void addChannel(string &, Client &cli);
+		void quit(int);
 		void notifyAll(Channel const *, Client &, string &);
 		string getPassword() { return password;}
 };
