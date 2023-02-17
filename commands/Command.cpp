@@ -45,8 +45,10 @@ void Command::colloquy(vector<string> &words, Client *cli) {
 }
 
 void Command::commands(vector<string> &words, Server &serv, Client *cli) {
+    string rep;
+    
     if (words[0] == ("NICK") || words[0] == ("nick")) {
-        cli->nickName = words[1];
+        nick(words, *cli, serv);
     } else if (words[0] == "USER" || words[0] == "user") {
         cli->userName = words[1];
     } else if (words[0] == ("PRIVMSG") || words[0] == ("privmsg")) {
@@ -54,7 +56,7 @@ void Command::commands(vector<string> &words, Server &serv, Client *cli) {
     } else if (words[0] == ("JOIN") || words[0] == ("join")) {
         join(words, serv);
     } else if (words[0] == ("PING") || words[0] == ("ping")) {
-        string rep = "PONG :localhost: " + words[1];
+        rep = "PONG :localhost: " + words[1];
         cli->write(rep);
     } else if (words[0] == ("LIST") || words[0] == ("list")) {
         list(words, serv);
@@ -67,6 +69,10 @@ void Command::commands(vector<string> &words, Server &serv, Client *cli) {
         serv.getClients().erase(cli->soc_fd);
     } else if (words[0] == ("KICK") || words[0] == ("kick")) {
         kick(words, serv, *cli);
+    } else if (words[0] == ("ISON") || words[0] == ("ison")) {
+        ison(words, *cli, serv);
+    } else if (words[0] == ("NOTICE") || words[0] == ("notice")) {
+        notify(words, *cli, serv, rep);
     } else if (words[0] == ("ME")) {
         me(cli);
     }
@@ -74,6 +80,7 @@ void Command::commands(vector<string> &words, Server &serv, Client *cli) {
 
 string Command::parse(Server &serv) {
 
+    cout << "cmd: " << command << endl;
     Client *cli = serv.getClient();
     std::stringstream ss(command);
     string word;

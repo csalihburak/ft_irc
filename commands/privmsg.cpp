@@ -19,7 +19,7 @@ string Command::mergeMessage(vector<string>& words)
 
 string Command::privmsg(vector<string>& words, Server &serv, Client &cli) {
 	vector<Channel*> allChannels;
-	string message; //mesaj mergelanacak
+	string message;
 	Server::client_iterator it;
 	Server::channel_iterator ct;
 	map<int, Client *> clients = serv.getClients();
@@ -61,11 +61,13 @@ string Command::privmsg(vector<string>& words, Server &serv, Client &cli) {
 				test = mergeMessage(words);
 				message = ":" + cli.nickName + "!~" + cli.nickName + "@localhost" + " PRIVMSG " + words[1] + " :" + test + "\r\n";
 				it->second->write(message);
+				message = ":localhost NOTICE " + cli.nickName + " :Your message was delivered to the recipient.\r\n";
+				cli.write(message);
 				break;
 			}
 		}
 		if (it == clients.end()) {
-			message = ":ircserv 411 " + cli.nickName +" :Recipient not found\r\n";
+			message = ":ircserv 401 " + cli.nickName +" :Recipient not found\r\n";
 			cli.write(message);
 		}
 	}
