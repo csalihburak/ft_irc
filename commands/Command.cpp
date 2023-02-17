@@ -14,7 +14,7 @@ Command::Command(const char *) {
 
 
 Command::Command() {
-    this->command = nullptr;
+    this->command = "";
 }
 
 

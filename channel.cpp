@@ -1,7 +1,7 @@
 #include "channel.hpp"
 
 Channel::Channel() {
-	this->admin = nullptr;
+	this->admin = NULL;
 	this->channelName = "";
 	this->password = "";
 }

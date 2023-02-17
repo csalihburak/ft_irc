@@ -11,7 +11,9 @@ void Command::list(vector<string> &words, Server &serv) {
     allChannel = serv.getChannel();
     if (!allChannel.empty()) {
         for(it = allChannel.begin(); it != allChannel.end(); it++) {
-           message = ":localhost 322 " + cli->nickName + " " + ((*it)->channelName) + " " + std::to_string(((*it)->users).size()) + " :" + "\r\n";
+            std::stringstream ss;
+            ss << ((*it)->users).size();
+           message = ":localhost 322 " + cli->nickName + " " + ((*it)->channelName) + " " + ss.str() + " :" + "\r\n";
             cli->write(message);
         }
     } else {

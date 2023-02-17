@@ -3,7 +3,7 @@
 string Command::join(vector<string>& words, Server &serv) {
 
     string message;
-    Channel *channel = nullptr;
+    Channel *channel = NULL;
     vector<Channel*> allChannels;
     Server::channel_iterator it;
     Client *cli = serv.getClient();
@@ -23,7 +23,7 @@ string Command::join(vector<string>& words, Server &serv) {
             channel = *it;
         }
     }
-    if (channel == nullptr) {
+    if (channel == NULL) {
         cli->channels.push_back(words[1]);
         Channel *newchannel = new Channel(words[1], cli);
         channel = newchannel;
