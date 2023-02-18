@@ -23,7 +23,7 @@ Client &Client::operator=(Client const &x) {
 int Client::isAvailable() {return is_avl;}
 
 std::string Client::getPrefix() const {
-	return nickName + ("!" + userName) + ("@127.0.0.1");
+	return this->nickName + ("!" + this->userName) + ("@localhost");
 }
 
 Client::~Client() {}

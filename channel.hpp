@@ -15,6 +15,7 @@ class Channel {
         std::string channelName;
 		std::pair<Client *, int> admin;
         map<Client *, int> users;
+		vector<string> bannedUsrs;
 		string topic;
         std::string password;
 		typedef map<Client *, int>::iterator chnlUsersit;

@@ -73,7 +73,11 @@ void Command::commands(vector<string> &words, Server &serv, Client *cli) {
         ison(words, *cli, serv);
     } else if (words[0] == ("NOTICE") || words[0] == ("notice")) {
         notify(words, *cli, serv, rep);
-    } else if (words[0] == ("ME")) {
+    } else if (words[0] == ("MODE") || words[0] == ("mode")) {
+        mode(words, *cli, serv);
+    }else if (words[0] == ("TOPIC") || words[0] == ("topic")) {
+        topic(words, *cli, serv);
+    }else if (words[0] == ("ME")) {
         me(cli);
     }
 }

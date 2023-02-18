@@ -28,6 +28,7 @@ class Command {
 		void list(vector<string> &, Server &);
 		static void quit(int, Server &);
 		void me(Client *);
+		void topic(vector<string> &, Client &, Server &);
 		void nick(vector<string>&, Client &, Server &);
 		void notify(vector<string>&, Client &, Server &, string &);
 		void ison(vector<string>&, Client &, Server &);

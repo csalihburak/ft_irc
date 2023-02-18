@@ -47,8 +47,11 @@ string Command::join(vector<string>& words, Server &serv, Client *cli) {
         (cit)->first->write(message);
     }
     message.clear();
-    if (channel->users.size() == 1)
-        message = ":ircserv 331 " + cli->nickName + " " + channel->channelName + ":Topic is not set\r\n";
+    cout << "top: " << channel->topic.empty() << endl;
+    if (channel->users.size() == 1 || channel->topic.empty())
+        message = ":ircserv 331 " + cli->nickName + " " + channel->channelName + " :Topic is not set\r\n";
+    else
+        message = ":ircserv 332 " + cli->nickName + " " + channel->channelName + " :" + channel->topic + "\r\n";
     message.append(":ircserv 353 " + cli->nickName + " = " + channel->channelName + " :@");
     for (cit = channel->users.begin(); cit !=  channel->users.end();) {
         message.append((cit)->first->nickName);
