@@ -49,15 +49,15 @@ int Server::createSocket()
 
 
 void Server::notifyAll(Channel const *chnl, Client &cli, string &cmd) {
-    vector<Client*> all_users;
-    vector<Client*>::iterator it;
+    map<Client*, int> all_users;
+    Channel::chnlUsersit it;
     string message;
 
     all_users = chnl->users;
     for (it = all_users.begin(); it != all_users.end(); it++) {
-        if ((*it)->nickName != cli.nickName) {
+        if ((it)->first->nickName != cli.nickName) {
             message = ":" + cli.nickName + "!~" + cli.nickName + "@localhost" + " " + cmd + " " + chnl->channelName + "\r\n";
-            (*it)->write(message);
+            (it)->first->write(message);
         }
     }
 

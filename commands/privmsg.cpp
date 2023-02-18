@@ -22,8 +22,10 @@ string Command::privmsg(vector<string>& words, Server &serv, Client &cli) {
 	string message;
 	Server::client_iterator it;
 	Server::channel_iterator ct;
-	map<int, Client *> clients = serv.getClients();
-
+	Channel::chnlUsersit cit;
+	map<int, Client *> clients;
+	
+	clients = serv.getClients();
 	allChannels = serv.getChannel();
 	if (words[1].empty()) {
 		message = ":ircserv 411 " + cli.nickName +" :Recipient not given\r\n";
@@ -38,10 +40,10 @@ string Command::privmsg(vector<string>& words, Server &serv, Client &cli) {
 				test = mergeMessage(words);
 				for(unsigned long  i = 0; i < cli.channels.size(); i++) {
 					if (words[1] == cli.channels[i]) {
-						for(unsigned long  i = 0; i < (*ct)->users.size(); i++) {
+						for(cit = (*ct)->users.begin(); cit != (*ct)->users.end(); cit++) {
 							message = ":" + cli.nickName + "!~" + cli.nickName + "@localhost" + " PRIVMSG " + words[1] + " :" + test + "\r\n";
-							if (cli.nickName != (*ct)->users[i]->nickName)
-								(*ct)->users[i]->write(message);
+							if (cli.nickName != (*cit).first->nickName)
+								(*cit).first->write(message);
 						}
 						return (words[0]);
 					}

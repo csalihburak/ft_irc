@@ -54,7 +54,7 @@ void Command::commands(vector<string> &words, Server &serv, Client *cli) {
     } else if (words[0] == ("PRIVMSG") || words[0] == ("privmsg")) {
         privmsg(words, serv, *cli);
     } else if (words[0] == ("JOIN") || words[0] == ("join")) {
-        join(words, serv);
+        join(words, serv, cli);
     } else if (words[0] == ("PING") || words[0] == ("ping")) {
         rep = "PONG :localhost: " + words[1];
         cli->write(rep);

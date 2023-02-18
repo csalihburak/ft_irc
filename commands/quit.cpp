@@ -8,6 +8,7 @@ void Command::quit(int soc, Server &serv) {
     Server::poll_iterator it;
     Server::channel_iterator ct;
     Server::client_iterator cit;
+    Channel::chnlUsersit tic;
 
     cli = (serv.getClients())[soc];
     if (cli != NULL) {
@@ -23,7 +24,10 @@ void Command::quit(int soc, Server &serv) {
             for(ct = allChannels.begin(); ct != allChannels.end(); ct++) {
                 if (std::find(usrChnls.begin(), usrChnls.end(), (*ct)->channelName) != usrChnls.end()) {
                     serv.notifyAll((*ct), (*(serv.getClients())[soc]), cmd);
-                    (*ct)->users.erase(std::find((*ct)->users.begin(), (*ct)->users.end(), cli));                    
+                    for(tic = (*ct)->users.begin(); tic != (*ct)->users.end(); tic++) {
+                        if (cli->nickName != (*tic).first->nickName)
+                            (*ct)->users.erase(tic);
+                    }
                 }
             }
             close(cli->soc_fd);

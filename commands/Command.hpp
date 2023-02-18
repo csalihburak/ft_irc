@@ -23,7 +23,7 @@ class Command {
         string parse(Server &);
 
 		string privmsg(vector<string>&, Server &, Client &);
-		string join(vector<string>&, Server &);
+		string join(vector<string>&, Server &, Client *);
 		void part(vector<string>&, Server &, Client &);
 		void list(vector<string> &, Server &);
 		static void quit(int, Server &);

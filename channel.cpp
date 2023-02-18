@@ -1,15 +1,14 @@
 #include "channel.hpp"
 
 Channel::Channel() {
-	this->admin = NULL;
 	this->channelName = "";
 	this->password = "";
 }
 
 Channel::Channel(std::string name, Client *admin) {
-    this->admin = admin;
+    this->admin = std::make_pair(admin, 1);
     this->channelName = name;
-    users.push_back(admin);
+    users.insert(std::make_pair(admin, 1));
 }
 
 

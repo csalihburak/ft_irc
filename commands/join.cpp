@@ -1,25 +1,38 @@
 #include "Command.hpp"
 
-string Command::join(vector<string>& words, Server &serv) {
+string Command::join(vector<string>& words, Server &serv, Client *cli) {
 
     string message;
-    Channel *channel = NULL;
+    Channel *channel;
+    vector<string> usrChnls;
     vector<Channel*> allChannels;
     Server::channel_iterator it;
-    Client *cli = serv.getClient();
+    Channel::chnlUsersit cit;
 
     allChannels = serv.getChannel();
-
+    channel = NULL;
+    usrChnls = cli->getChannels();
     if ((int)words[1].find("#") != 0 || (int)words[1].find(" ") != -1 || (int)words[1].find("-") != -1) {
         message = "475 " + cli->nickName + " :Cannot join channel\r\n";
         cli->write(message);
         return ("");
     }
     for (it = allChannels.begin(); it != allChannels.end(); it++) {
+        if ((*it)->channelName == words[1]) { 
+            if (std::find(usrChnls.begin(), usrChnls.end(), (*it)->channelName) != usrChnls.end()) {
+                message = ":ircserv 443 " + (*it)->channelName + " " + cli->nickName +  " :is already on channel\r\n";
+                cli->write(message);
+                return words[0];
+            }
+        }
+    }
+    for (it = allChannels.begin(); it != allChannels.end(); it++) {
         if ((*it)->channelName == words[1]) {
             cli->channels.push_back(words[1]);
-            if (std::find((*it)->users.begin(), (*it)->users.end(), cli) == (*it)->users.end())
-                (*it)->users.push_back(cli);
+            for (cit = (*it)->users.begin(); cit != (*it)->users.end(); cit++) {
+                if ((cit)->first->nickName != cli->nickName)
+                (*it)->users.insert(std::make_pair(cli, 0));
+            }
             channel = *it;
         }
     }
@@ -29,17 +42,17 @@ string Command::join(vector<string>& words, Server &serv) {
         channel = newchannel;
         serv.addChannel(words[1], *cli);
     }
-    for (unsigned long i = 0; i < channel->users.size(); i++) {
+    for (cit = channel->users.begin(); cit !=  channel->users.end(); cit++) {
         message =  ":" + cli->getPrefix() + " JOIN " + words[1] + "\r\n";
-        channel->users[i]->write(message);
+        (cit)->first->write(message);
     }
     message.clear();
     if (channel->users.size() == 1)
         message = ":ircserv 331 " + cli->nickName + " " + channel->channelName + ":Topic is not set\r\n";
     message.append(":ircserv 353 " + cli->nickName + " = " + channel->channelName + " :@");
-    for (unsigned long  i = 0; i < channel->users.size(); i++) {
-        message.append(channel->users[i]->nickName);
-        if (i + 1 == channel->users.size())
+    for (cit = channel->users.begin(); cit !=  channel->users.end();) {
+        message.append((cit)->first->nickName);
+        if (++cit == channel->users.end())
             message.append("\r\n");
         else
             message.append(" ");

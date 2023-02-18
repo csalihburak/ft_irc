@@ -6,6 +6,7 @@ void Command::notify(vector<string>&words, Client &cli, Server &serv, string &op
 	(void)opt;
 	Server::client_iterator it;
 	Server::channel_iterator ct;
+	Channel::chnlUsersit cit;
 	map<int, Client *> clients = serv.getClients();
 
 	allChannels = serv.getChannel();
@@ -22,10 +23,10 @@ void Command::notify(vector<string>&words, Client &cli, Server &serv, string &op
 				test = mergeMessage(words);
 				for(unsigned long  i = 0; i < cli.channels.size(); i++) {
 					if (words[1] == cli.channels[i]) {
-						for(unsigned long  i = 0; i < (*ct)->users.size(); i++) {
+						for(cit = (*ct)->users.begin(); cit != (*ct)->users.end(); cit++) {
 							message = ":" + cli.nickName + " NOTICE " + (*ct)->channelName + " :" + test + "\r\n";
-							if (cli.nickName != (*ct)->users[i]->nickName)
-								(*ct)->users[i]->write(message);
+							if (cli.nickName != (*cit).first->nickName)
+								(*cit).first->write(message);
 						}
 						return;
 					}
