@@ -31,7 +31,7 @@ class Command {
 		void nick(vector<string>&, Client &, Server &);
 		void notify(vector<string>&, Client &, Server &, string &);
 		void ison(vector<string>&, Client &, Server &);
-		//void who(vector<string>&, Server &);
+		void mode(vector<string>&, Client &, Server &);
 		void kick(vector<string> &, Server &, Client &);
 		void kickMessage(Channel const *, Client &, string);
 		void commands(vector<string>&, Server &, Client *);
