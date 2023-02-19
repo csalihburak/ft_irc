@@ -6,9 +6,9 @@ OBJ_DIR = obj/
 
 OBJS = $(addprefix $(OBJ_DIR), $(SRC:.cpp=.o))
 
-CPP = c++
+CPP = c++ -g 
 
-CPPFLAGS = -Wall -Wextra -Werror -g -std=c++98
+CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 
 all: $(NAME)
 

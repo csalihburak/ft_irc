@@ -23,10 +23,10 @@ class Command {
         string parse(Server &);
 
 		string privmsg(vector<string>&, Server &, Client &);
-		string join(vector<string>&, Server &, Client *);
+		string join(vector<string>&, Server &, Client &);
 		void part(vector<string>&, Server &, Client &);
 		void list(vector<string> &, Server &);
-		static void quit(int, Server &);
+		static void quit(int, Server &, vector<string> &);
 		void me(Client *);
 		void topic(vector<string> &, Client &, Server &);
 		void nick(vector<string>&, Client &, Server &);
@@ -36,7 +36,7 @@ class Command {
 		void kick(vector<string> &, Server &, Client &);
 		void kickMessage(Channel const *, Client &, string);
 		void commands(vector<string>&, Server &, Client *);
-		int checks(Server &, vector<string> &, Client *);
+		int checks(Server &, vector<string> &, Client &);
 		void colloquy(vector<string> &, Client *);
 		string mergeMessage(vector<string>& words);
 		string welcomemsg(void);

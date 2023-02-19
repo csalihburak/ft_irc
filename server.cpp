@@ -56,17 +56,18 @@ void Server::notifyAll(Channel const *chnl, Client &cli, string &cmd) {
     all_users = chnl->users;
     for (it = all_users.begin(); it != all_users.end(); it++) {
         if ((it)->first->nickName != cli.nickName) {
-            message = ":" + cli.nickName + "!~" + cli.nickName + "@localhost" + " " + cmd + " " + chnl->channelName + "\r\n";
+            message = "* " + cli.nickName + " has quit (" + cmd + ")\r\n"; 
+            //message = ":" + cli.nickName + "!~" + cli.nickName + "@localhost" + " " + cmd + " " + chnl->channelName + "\r\n";
             (it)->first->write(message);
         }
     }
-
 }
 
 void Server::startServer(Server &serv)
 {
-    pollfd server_fd = {serv_soc, POLLIN, 0}; 
+    pollfd server_fd = {serv_soc, POLLIN, 0};
     this->socket_poll.push_back(server_fd);
+    vector<string> buff;
     cout << "Server listening on port: " << port << endl;
     while (1)
     {
@@ -80,7 +81,8 @@ void Server::startServer(Server &serv)
 
             if ((it->revents & POLLHUP) == POLLHUP) {
                 cout << "client disconneted" << endl;
-                Command::quit(it->fd, serv);
+                buff.push_back("client disconneted");
+                Command::quit(it->fd, serv, buff);
                 clients.erase(it->fd);
                 break;
             }
@@ -97,10 +99,6 @@ void Server::startServer(Server &serv)
     }
 }
 
-void Server::addChannel(string &name, Client &cli) {
-    Channel *chnl = new Channel(name, &cli);
-    channels.push_back(chnl);
-}
 
 void Server::newClient() {
     int cliId;

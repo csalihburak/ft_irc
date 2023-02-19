@@ -23,6 +23,6 @@ class Channel {
 		Channel(Channel const&);
 		Channel &operator=(Channel const &x);
 		Channel();
-		Channel(std::string, Client*);
+		Channel(std::string, Client&);
 		~Channel();
 };

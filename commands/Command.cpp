@@ -54,18 +54,16 @@ void Command::commands(vector<string> &words, Server &serv, Client *cli) {
     } else if (words[0] == ("PRIVMSG") || words[0] == ("privmsg")) {
         privmsg(words, serv, *cli);
     } else if (words[0] == ("JOIN") || words[0] == ("join")) {
-        join(words, serv, cli);
+        join(words, serv, *cli);
     } else if (words[0] == ("PING") || words[0] == ("ping")) {
         rep = "PONG :localhost: " + words[1];
         cli->write(rep);
     } else if (words[0] == ("LIST") || words[0] == ("list")) {
         list(words, serv);
-    } else if (words[0] == ("WHO") || words[0] == ("who")) {
-        //who(words, serv);
     } else if (words[0] == ("PART") || words[0] == ("PART")) {
         part(words, serv, *cli);
-    }   else if (words[0] == ("QUIT") || words[0] == ("quit")) {
-        quit(cli->soc_fd, serv);
+    } else if (words[0] == ("QUIT") || words[0] == ("quit")) {
+        quit(cli->soc_fd, serv, words);
         serv.getClients().erase(cli->soc_fd);
     } else if (words[0] == ("KICK") || words[0] == ("kick")) {
         kick(words, serv, *cli);
@@ -92,10 +90,10 @@ string Command::parse(Server &serv) {
 
     while (ss.good() && ss >> word) 
         words.push_back(word);
-    if (!words[24].empty() && words[24] == "NICK") { // for colloquy
+    if ((words.size() > 20) && (!words[24].empty() && words[24] == "NICK")) { // for colloquy
         colloquy(words, cli);
     } else if (cli->nickName.empty() || cli->userName.empty() || cli->is_avl == 0 || cli->is_avl == 2)// for nc
-        checks(serv, words, cli);
+        checks(serv, words, *cli);
     else // other commands
         commands(words, serv, cli);
     return word;

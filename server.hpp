@@ -11,6 +11,7 @@
 #include <map>
 #include <sstream>
 #include <poll.h>
+#include <csignal>
 #include <iostream>
 #include <unistd.h>
 #include <cstdio>
@@ -63,7 +64,6 @@ class Server {
 		void startServer(Server &);
 		void newClient();
 		void newMessage(int);
-		void addChannel(string &, Client &cli);
 		void notifyAll(Channel const *, Client &, string &);
 		string getPassword() { return password;}
 };

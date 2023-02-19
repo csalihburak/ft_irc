@@ -1,6 +1,23 @@
 #include "Command.hpp"
 
-void Command::quit(int soc, Server &serv) {
+
+string merge(vector<string>& words) {
+	int i;
+	std::string result;
+
+	i = 0;
+    for (std::vector<std::string>::const_iterator it = words.begin(); it != words.end(); ++it) {
+        if (it != words.end() && i > 0) {
+            result += words[i];
+			if (it != words.end() - 1)
+				result += " ";
+        }
+		i++;
+    }
+    return result;
+}
+
+void Command::quit(int soc, Server &serv, vector<string> &words) {
     Client *cli;
     vector<string> usrChnls;
     vector<Channel*> allChannels;
@@ -20,7 +37,7 @@ void Command::quit(int soc, Server &serv) {
         }
         if (it != serv.getPoll().end()) {
             serv.getPoll().erase(it);
-            cmd = "PART";
+            cmd = merge(words);
             for(ct = allChannels.begin(); ct != allChannels.end(); ct++) {
                 if (std::find(usrChnls.begin(), usrChnls.end(), (*ct)->channelName) != usrChnls.end()) {
                     serv.notifyAll((*ct), (*(serv.getClients())[soc]), cmd);

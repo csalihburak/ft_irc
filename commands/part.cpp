@@ -34,8 +34,11 @@ void Command::part(vector<string>& words, Server &serv, Client &cli) {
                 (*it).first->write(message);
             }
             for(cit = (*ct)->users.begin(); cit != (*ct)->users.end(); cit++) {
-                if (cli.nickName != (*cit).first->nickName)
+                if (cli.nickName == (*cit).first->nickName) {
                     (*ct)->users.erase(cit);
+                    cli.channels.erase(std::find(usrChnls.begin(), usrChnls.end(), words[1]));
+                    break;
+                }
             }
         }
     }

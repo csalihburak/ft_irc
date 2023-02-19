@@ -5,10 +5,10 @@ Channel::Channel() {
 	this->password = "";
 }
 
-Channel::Channel(std::string name, Client *admin) {
-    this->admin = std::make_pair(admin, 1);
+Channel::Channel(std::string name, Client &admin) {
+    this->admin = std::make_pair(&admin, 1);
     this->channelName = name;
-    users.insert(std::make_pair(admin, 1));
+    users.insert(std::make_pair(&admin, 1));
 }
 
 
