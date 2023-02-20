@@ -44,6 +44,26 @@ void Command::colloquy(vector<string> &words, Client *cli) {
     cli->write(s);
 }
 
+void help(Client &cli) {
+    string message;
+
+    message = ":ircserv 705 " + cli.nickName + "\r\n:'NICK'    command; sets the current user nickname\r\n";
+    message.append("'USER'    command; sets the current user username\r\n");
+    message.append("'JOIN'    command; Join a channel -if channle not exist creates one-\r\n");
+    message.append("'PING'    command; Check the connection with server\r\n");
+    message.append("'LIST'    command; List all the channels on the server\r\n");
+    message.append("'PART'    command; Leave a channel -with a message or not-\r\n");
+    message.append("'QUIT'    command; Close the connection with server\r\n");
+    message.append("'KICK'    command; Kicks a user from the channel if user is moderator\r\n");
+    message.append("'HELP'    command; Prints this message\r\n");
+    message.append("'TOPIC'   command; set or view the topic of the channel\r\n");
+    message.append("'NOTICE'  command; Notify the user or the users on the channel\r\n");
+    message.append("'PRIVMSG' command; send a message to a client or channel\r\n");
+    message.append("'ME'      command; one of the bot commands it send you a message of your informations like user and nickname, channels that you are currently in\r\n");
+    cli.write(message);
+}
+
+
 void Command::commands(vector<string> &words, Server &serv, Client *cli) {
     string rep;
     
@@ -73,10 +93,14 @@ void Command::commands(vector<string> &words, Server &serv, Client *cli) {
         notify(words, *cli, serv, rep);
     } else if (words[0] == ("MODE") || words[0] == ("mode")) {
         mode(words, *cli, serv);
-    }else if (words[0] == ("TOPIC") || words[0] == ("topic")) {
+    } else if (words[0] == ("TOPIC") || words[0] == ("topic")) {
         topic(words, *cli, serv);
-    }else if (words[0] == ("ME")) {
-        me(cli);
+    } else if (words[0] == ("HELP") || words[0] == ("help")) {
+        help(*cli);
+    } else if (words[0] == ("bot")) {
+        bot(words, *cli, serv);
+    } else {
+        cli->write(":ircserv 403 " + cli->nickName + " :Command not found\r\n");
     }
 }
 
@@ -86,6 +110,7 @@ string Command::parse(Server &serv) {
     std::stringstream ss(command);
     string word;
     vector<string> words;
+    cout << "cmd: " << command << endl;
 
     while (ss.good() && ss >> word) 
         words.push_back(word);

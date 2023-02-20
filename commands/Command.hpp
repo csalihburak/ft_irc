@@ -27,7 +27,7 @@ class Command {
 		void part(vector<string>&, Server &, Client &);
 		void list(vector<string> &, Server &);
 		static void quit(int, Server &, vector<string> &);
-		void me(Client *);
+		void me(Client &);
 		void topic(vector<string> &, Client &, Server &);
 		void nick(vector<string>&, Client &, Server &);
 		void notify(vector<string>&, Client &, Server &, string &);
@@ -38,7 +38,10 @@ class Command {
 		void commands(vector<string>&, Server &, Client *);
 		int checks(Server &, vector<string> &, Client &);
 		void colloquy(vector<string> &, Client *);
-		string mergeMessage(vector<string>& words);
+		string mergeMessage(vector<string>&);
 		string welcomemsg(void);
+		void bot(vector<string> &, Client &, Server &);
+		void whois(vector<string> &, Client &, Server &);
+		string agunes();
 		int kickCont(vector<string> &, Server &, Client &);
 };

@@ -15,7 +15,7 @@ void Command::ison(vector<string>&words, Client &cli, Server &serv) {
                 names.append(words[i] + " ");
         }
     }
-    //names.pop_back();
+    message.append("agunes");
     message.append(names + "\r\n");
     cli.write(message);
 }
