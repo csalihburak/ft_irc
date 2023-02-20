@@ -45,7 +45,6 @@ void Command::notify(vector<string>&words, Client &cli, Server &serv, string &op
 				string test;
 				test = mergeMessage(words);
 				message = ":" + cli.nickName + " NOTICE " + words[1] + " :" + test + "\r\n";
-				cout << "test: " << message << endl;
 				it->second->write(message);
 				break;
 			}

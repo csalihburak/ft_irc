@@ -17,7 +17,6 @@ void Command::topic(vector<string> &words, Client &cli, Server &serv)
                         if((*userit).second == 1) {
                             message = mergeMessage(words);
                             (*ct)->topic = message;
-                            cout << "topic: " << (*ct)->topic << endl;
                             for (userit = (*ct)->users.begin(); userit != (*ct)->users.end(); userit++) {
                                 (*userit).first->write(":ircserv 332 " + cli.nickName + " " + (*ct)->channelName + " " + message  + "\r\n");
                             }

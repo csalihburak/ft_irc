@@ -35,6 +35,11 @@ string Command::privmsg(vector<string>& words, Server &serv, Client &cli) {
 		
 		for(ct = allChannels.begin(); ct != allChannels.end(); ct++) {
 			if ((*ct)->channelName == words[1]) {
+				if (std::find((*ct)->bannedUsrs.begin(), (*ct)->bannedUsrs.end(), cli.nickName) != (*ct)->bannedUsrs.end()) {
+					message = ":ircserv " + cli.nickName + " " + (*ct)->channelName + " :Cannot send message to channel (+b)\r\n";
+					cli.write(message);
+					return message;
+				}
 				string test;
 
 				test = mergeMessage(words);

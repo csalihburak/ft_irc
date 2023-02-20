@@ -115,7 +115,6 @@ void Server::newClient() {
     socket_poll.push_back(newfd);
     Client *newCli = new Client(cliId);
     newCli->flag = 1;
-    cout << "address: " << newCli << endl;
     string s = ":ircserv 001 :Welcome to ft_irc server!\r\nPlease enter the password: \r\n";
     newCli->write(s);
     clients.insert(std::make_pair(cliId, newCli));

@@ -82,7 +82,6 @@ void Command::commands(vector<string> &words, Server &serv, Client *cli) {
 
 string Command::parse(Server &serv) {
 
-    cout << "cmd: " << command << endl;
     Client *cli = serv.getClient();
     std::stringstream ss(command);
     string word;

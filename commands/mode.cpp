@@ -27,9 +27,10 @@ void Command::mode(vector<string> &words, Client &cli, Server &serv) {
                         if ((*cit2).first->nickName == words[3]) {
                             if (words[2] == "+b") {
                                 (*it)->bannedUsrs.push_back(words[3]);
-                                message = ":ircserv.localhost 474 MODE " + (*it)->channelName + " +b " + (*cit2).first->getPrefix() +  "\r\n";
-                                cout << "test: " << message << endl;
-                                for ((cit2) = (*it)->users.begin(); cit2 != (*it)->users.end(); cit2++) {
+                                message = ":" + cli.nickName + " KICK " + words[1] + " " + words[3] + " :" + "Banned from channel by " + cli.nickName + "\r\n";
+                                (*cit2).first->write(message);
+                                (*it)->users.erase(cit2);
+                                for ((cit2) = (*it)->users.begin(); cit2 != (*it)->users.end(); cit2++) {                                        
                                     (*cit2).first->write(message);
                                 }
                                 return;

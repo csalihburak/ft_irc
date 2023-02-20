@@ -18,15 +18,20 @@ string Command::join(vector<string>& words, Server &serv, Client &cli) {
         return ("");
     }
     if (allChannels.size() > 0) {
-/*         for (it = allChannels.begin(); it != allChannels.end(); it++) {
+        for (it = allChannels.begin(); it != allChannels.end(); it++) {
             if ((*it)->channelName == words[1]) { 
+				if (std::find((*it)->bannedUsrs.begin(), (*it)->bannedUsrs.end(), cli.nickName) != (*it)->bannedUsrs.end()) {
+                	message = ":ircserv 474 " + cli.nickName + " " + (*it)->channelName + " :Cannot join channel (+b)\r\n";
+					cli.write(message);
+					return (words[0]);
+                }
                 if (std::find(usrChnls.begin(), usrChnls.end(), (*it)->channelName) != usrChnls.end()) {
                     message = ":ircserv 443 " + (*it)->channelName + " " + cli.nickName +  " :is already on channel\r\n";
                     cli.write(message);
                     return words[0];
                 }
             }
-        } */
+        }
         for (it = allChannels.begin(); it != allChannels.end(); it++) {
             if ((*it)->channelName == words[1]) {
                 cli.channels.push_back(words[1]);
@@ -56,10 +61,8 @@ string Command::join(vector<string>& words, Server &serv, Client &cli) {
     else
         message = ":ircserv 332 " + cli.nickName + " " + channel->channelName + " :" + channel->topic + "\r\n";
     message.append(":ircserv 353 " + cli.nickName + " = " + channel->channelName + " :@");
-    cout << "size: " << channel->users.size() << endl;
     for (cit = channel->users.begin(); cit !=  channel->users.end();) {
         message.append((cit)->first->nickName);
-        cout << "nick: " << (cit)->first->nickName << endl; 
         if (++cit == channel->users.end())
             message.append("\r\n");
         else
