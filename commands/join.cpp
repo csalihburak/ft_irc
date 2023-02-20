@@ -18,7 +18,7 @@ string Command::join(vector<string>& words, Server &serv, Client &cli) {
         return ("");
     }
     if (allChannels.size() > 0) {
-        for (it = allChannels.begin(); it != allChannels.end(); it++) {
+/*         for (it = allChannels.begin(); it != allChannels.end(); it++) {
             if ((*it)->channelName == words[1]) { 
                 if (std::find(usrChnls.begin(), usrChnls.end(), (*it)->channelName) != usrChnls.end()) {
                     message = ":ircserv 443 " + (*it)->channelName + " " + cli.nickName +  " :is already on channel\r\n";
@@ -26,7 +26,7 @@ string Command::join(vector<string>& words, Server &serv, Client &cli) {
                     return words[0];
                 }
             }
-        }
+        } */
         for (it = allChannels.begin(); it != allChannels.end(); it++) {
             if ((*it)->channelName == words[1]) {
                 cli.channels.push_back(words[1]);

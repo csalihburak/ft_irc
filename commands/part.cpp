@@ -36,7 +36,12 @@ void Command::part(vector<string>& words, Server &serv, Client &cli) {
             for(cit = (*ct)->users.begin(); cit != (*ct)->users.end(); cit++) {
                 if (cli.nickName == (*cit).first->nickName) {
                     (*ct)->users.erase(cit);
-                    cli.channels.erase(std::find(usrChnls.begin(), usrChnls.end(), words[1]));
+                    for (vector<string>::iterator x = cli.channels.begin(); x != cli.channels.end(); x++) {
+                        if ((*x) == words[1]) {
+                            cli.channels.erase(x);
+                            break;
+                        }
+                    }
                     break;
                 }
             }

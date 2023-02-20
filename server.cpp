@@ -83,7 +83,7 @@ void Server::startServer(Server &serv)
                 buff.push_back("client disconneted");
                 Command::quit(it->fd, serv, buff);
                 //delete clients[it->fd];
-                clients.erase(it->fd);
+                //clients.erase(it->fd);
                 break;
             }
             if ((it->revents & POLLIN) == POLLIN) {
