@@ -56,8 +56,7 @@ void Server::notifyAll(Channel const *chnl, Client &cli, string &cmd) {
     all_users = chnl->users;
     for (it = all_users.begin(); it != all_users.end(); it++) {
         if ((it)->first->nickName != cli.nickName) {
-            message = "* " + cli.nickName + " has quit (" + cmd + ")\r\n"; 
-            //message = ":" + cli.nickName + "!~" + cli.nickName + "@localhost" + " " + cmd + " " + chnl->channelName + "\r\n";
+            message = "* " + cli.nickName + " has quit (" + cmd + ")\r\n";
             (it)->first->write(message);
         }
     }
@@ -83,6 +82,7 @@ void Server::startServer(Server &serv)
                 cout << "client disconneted" << endl;
                 buff.push_back("client disconneted");
                 Command::quit(it->fd, serv, buff);
+                //delete clients[it->fd];
                 clients.erase(it->fd);
                 break;
             }
@@ -115,6 +115,7 @@ void Server::newClient() {
     socket_poll.push_back(newfd);
     Client *newCli = new Client(cliId);
     newCli->flag = 1;
+    cout << "address: " << newCli << endl;
     string s = ":ircserv 001 :Welcome to ft_irc server!\r\nPlease enter the password: \r\n";
     newCli->write(s);
     clients.insert(std::make_pair(cliId, newCli));

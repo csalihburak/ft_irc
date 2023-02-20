@@ -40,10 +40,11 @@ void Command::quit(int soc, Server &serv, vector<string> &words) {
             cmd = merge(words);
             for(ct = allChannels.begin(); ct != allChannels.end(); ct++) {
                 if (std::find(usrChnls.begin(), usrChnls.end(), (*ct)->channelName) != usrChnls.end()) {
-                    serv.notifyAll((*ct), (*(serv.getClients())[soc]), cmd);
+                    serv.notifyAll((*ct), *cli, cmd);
                     for(tic = (*ct)->users.begin(); tic != (*ct)->users.end(); tic++) {
-                        if (cli->nickName != (*tic).first->nickName)
+                        if (cli->nickName == (*tic).first->nickName)
                             (*ct)->users.erase(tic);
+                            return;
                     }
                 }
             }

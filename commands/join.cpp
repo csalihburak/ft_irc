@@ -56,9 +56,10 @@ string Command::join(vector<string>& words, Server &serv, Client &cli) {
     else
         message = ":ircserv 332 " + cli.nickName + " " + channel->channelName + " :" + channel->topic + "\r\n";
     message.append(":ircserv 353 " + cli.nickName + " = " + channel->channelName + " :@");
+    cout << "size: " << channel->users.size() << endl;
     for (cit = channel->users.begin(); cit !=  channel->users.end();) {
         message.append((cit)->first->nickName);
-        cout << "mesage: " << message << endl;
+        cout << "nick: " << (cit)->first->nickName << endl; 
         if (++cit == channel->users.end())
             message.append("\r\n");
         else

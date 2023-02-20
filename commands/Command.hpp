@@ -40,4 +40,5 @@ class Command {
 		void colloquy(vector<string> &, Client *);
 		string mergeMessage(vector<string>& words);
 		string welcomemsg(void);
+		int kickCont(vector<string> &, Server &, Client &);
 };
