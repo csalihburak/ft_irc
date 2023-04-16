@@ -1,52 +1,69 @@
-IRC Server Project
-Description
-This project is an IRC server implemented in C++98. It can handle multiple clients at the same time and supports the following features:
-
-Authentication
-Setting a nickname and username
-Joining a channel
-Sending and receiving private messages
-Broadcasting channel messages to all clients who have joined the channel
-User types: operators and regular users
-Operator-specific commands
-Contributors
-Salih Burak Çoşkun: https://github.com/csalihburak/
-Eyüp Güler: https://github.com/egulerr
-Mert Alaşahan: https://github.com/Mertflixs/
-Requirements
-The server must be non-blocking and handle all I/O operations in a non-blocking way.
-Only one poll() (or equivalent) can be used for handling all I/O operations.
-Forking is not allowed.
-Communication between client and server has to be done via TCP/IP (v4 or v6).
-The server must support authentication, setting a nickname and username, joining a channel, sending and receiving private messages, and broadcasting channel messages to all clients who have joined the channel.
-The server must support two types of users: operators and regular users.
-The server must implement operator-specific commands.
-Installation
-To install and run the IRC server, follow these steps:
-
-Clone the repository:
-shell
-Copy code
-$ git clone https://github.com/[USERNAME]/ircserv.git
-Compile the server using the Makefile:
-go
-Copy code
-$ make
-Run the server:
-php
-Copy code
-$ ./ircserv <port> <password>
-Files
-Makefile: Compiles the server
-*.h, *.hpp, *.cpp, *.tpp, *.ipp: Header, source, and template files
-config: Optional configuration file
-Usage
-To use the IRC server, follow these steps:
-
-Connect to the server using an IRC client.
-Authenticate using the password specified when starting the server.
-Set a nickname and username.
-Join a channel.
-Send and receive private messages.
-Broadcast messages to all clients who have joined the channel.
-Use operator-specific commands if you are an operator
+<!DOCTYPE html>
+<html>
+<head>
+	<title>IRC Server in C++98</title>
+</head>
+<body>
+	<h1>IRC Server in C++98</h1>
+	<p>This project is an implementation of an IRC (Internet Relay Chat) server in C++98. The server is capable of handling multiple clients at the same time and never hangs. Only one poll() function is used for handling all the operations.</p>
+	
+	<h2>Mandatory Part</h2>
+	<p>The following files are required to turn in:</p>
+	<ul>
+		<li>Makefile</li>
+		<li>*.{h, hpp}</li>
+		<li>*.cpp</li>
+		<li>*.tpp</li>
+		<li>*.ipp</li>
+		<li>an optional configuration file</li>
+	</ul>
+	<p>The following targets should be available in Makefile:</p>
+	<ul>
+		<li>NAME</li>
+		<li>all</li>
+		<li>clean</li>
+		<li>fclean</li>
+		<li>re</li>
+	</ul>
+	<p>The executable is run as follows: ./ircserv &lt;port&gt; &lt;password&gt;</p>
+	<ul>
+		<li>port: The port number on which your IRC server will be listening to for incoming IRC connections.</li>
+		<li>password: The connection password. It will be needed by any IRC client that tries to connect to your server.</li>
+	</ul>
+	<p>The following external functions are used:</p>
+	<ul>
+		<li>socket</li>
+		<li>close</li>
+		<li>setsockopt</li>
+		<li>getsockname</li>
+		<li>getprotobyname</li>
+		<li>gethostbyname</li>
+		<li>getaddrinfo</li>
+		<li>freeaddrinfo</li>
+		<li>bind</li>
+		<li>connect</li>
+		<li>listen</li>
+		<li>accept</li>
+		<li>htons</li>
+		<li>htonl</li>
+		<li>ntohs</li>
+		<li>ntohl</li>
+		<li>inet_addr</li>
+		<li>inet_ntoa</li>
+		<li>send</li>
+		<li>recv</li>
+		<li>signal</li>
+		<li>lseek</li>
+		<li>fstat</li>
+		<li>fcntl</li>
+		<li>poll (or equivalent)</li>
+	</ul>
+	
+	<h2>Contributors</h2>
+	<ul>
+		<li><a href="https://github.com/csalihburak/">Salih Burak Çoşkun</a></li>
+		<li><a href="https://github.com/egulerr">Eyüp Güler</a></li>
+		<li><a href="https://github.com/Mertflixs/">Mert Alaşahan</a></li>
+	</ul>
+</body>
+</html>
