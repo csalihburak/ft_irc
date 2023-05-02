@@ -1,4 +1,4 @@
-# ft_irc 
+# ft_irc
 
 ## 42-ft_irc Summary
 42's project to build a custom IRC server. IRC stands for Internet Relay Chat, and is one of the first chat protocol on the internet, made around 1988. Twitch still uses an IRC chat nowadays, and a network of servers still hosts thousands of channels.
