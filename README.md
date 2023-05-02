@@ -45,5 +45,5 @@ Then, launch the server. Usage:
 Then, launch your irssi client, and connect to the server (locally if you want to test on the same machine).
 
 ## Contributors
-[Eyüp Güler](https://github.com/egulerr)
-[Mert Alaşahan](https://github.com/mertflix)
+- [Eyüp Güler](https://github.com/egulerr)
+- [Mert Alaşahan](https://github.com/mertflix)
