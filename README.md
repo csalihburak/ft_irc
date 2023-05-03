@@ -37,7 +37,6 @@ Clone the repository in the location of your choice, go inside it, then compile 
 cd ft_irc
 make
 ```
-Configure the file.config file inside ```src/config/``` if you want to play with some settings and know what you're doing.
 Then, launch the server. Usage:
 ```
 ./ircserv <port> <password>
